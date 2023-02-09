@@ -1,68 +1,122 @@
-const MongoClient = require('mongodb').MongoClient
-const assert = require('assert')
 
-const url = 'mongodb://localhost:27017'
-const dbName = 'mongo_node'
+const mongoose = require('mongoose')
 
-const client = new MongoClient(url)
 
-client.connect(function (err) {
-    assert.equal(null, err)
-    console.log('Connected successfully to server')
+mongoose.set('strictQuery', true);
+mongoose.connect('mongodb://localhost:27017/fruitsDB')
 
-    const db = client.db(dbName)
-
-    // insertDocuments(db, function () {
-    //     client.close()
-    // })
-    findDocuments(db,function () {
-        client.close()
-    })
-
+const fruitSchema = new mongoose.Schema ({
+    name: { type: String, required: true },
+    rating: {
+        type: Number,
+        min: 1,
+        max: 10
+    },
+    review: String
 })
 
-const insertDocuments = function (db, callback) {
-    const collection = db.collection('fruits')
+const Fruit = mongoose.model("Fruit", fruitSchema);
+
+const fruit = new Fruit ({
+    name: 'George',
+    rating: 4,
+    review: 'Pretty solid as a fruit'
+})
+
+// fruit.save()
+
+const people_schema = ({
+    name: String,
+    age: Number,
+    favouriteFruit: fruitSchema
+})
+
+const Human = mongoose.model('Human', people_schema)
 
 
-    collection.insertMany(
-        [
-            {
-                name: 'Apple',
-                score: 16,
-                review: 'Great!'
-            },
-
-            {
-                name: 'Banana',
-                score: 16,
-                review: 'Best!'
-            },
-
-            {
-                name: 'Or ange',
-                score: 16,
-                review: 'Sweet!'
-            }
-
-        ],
-        function (error, result) {
-            assert.equal(error, null)
-            console.log('Inserted 3 documents')
-            callback(result)
-
-        }
-    )
-
-}
+// human.save()
 
 
-const findDocuments = function (db, callback) {
-    const collection = db.collection('fruits')
 
-    collection.find({}).toArray((err, fruits) => {
-        console.log("Found the following records")
-        console.log(fruits)
-        callback(fruits)
-    } )
-}
+const pineapple = new Fruit({
+    name: 'Pineapple',
+    score: 9,
+    review: 'Great fruit'
+})
+
+// pineapple.save()
+
+const human = new Human ({
+    name: 'Name',
+    age: 29,
+    favouriteFruit: pineapple
+})
+
+// human.save()
+
+
+const kiwi = new Fruit({
+    name: 'Kiwi',
+    score: 4,
+    review: 'Yummy',
+})
+//
+// const banana = new Fruit({
+//     name: 'Banana',
+//     score: 3,
+//     review: 'Yummy',
+// })
+//
+//
+//
+// const orange = new Fruit({
+//     name: 'Orange',
+//     score: 5,
+//     review: 'Yummy',
+// })
+
+
+
+// Fruit.insertMany([kiwi,banana,orange], (err)=>{
+//     if (err) {
+//         console.log(err)
+//     }
+//     else {
+//         console.log('Success')
+//     }
+// })
+
+
+
+Fruit.find((err,fruits)=> {
+    if (err) {
+        console.log(err)
+    }
+    else {
+
+        fruits.forEach(fruit => console.log(fruit.name))
+
+    }
+})
+
+Human.updateMany({name:'John'}, {favouriteFruit:pineapple}, (err) => {
+    if (err){
+        console.log(err)
+    } else {
+        console.log('Well MET')
+    }
+})
+
+// Function call
+// Deleting all users whose age >= 15
+// Fruit.deleteMany({ name: 'George' }).then(function(){
+//     console.log("Data deleted"); // Success
+// }).catch(function(error){
+//     console.log(error); // Failure
+// });
+//
+// Human.deleteMany({ name: 'Mike' }).then(function(){
+//     console.log("Data deleted"); // Success
+// }).catch(function(error){
+//     console.log(error); // Failure
+// });
