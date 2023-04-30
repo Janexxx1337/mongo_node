@@ -15,15 +15,17 @@ git clone https://github.com/Janexxx1337/mongo_node.git
 ```
 # 2. Установить зависимости
 
-``` cd mongo_node
+``` 
+cd mongo_node
      npm install
 ```
 # 3. Настроить MongoDB
 ## Убедитесь, что MongoDB установлена на вашем компьютере и служба MongoDB запущена.
 
-#Запуск
+## Запуск
 
-``` npm start 
+```
+npm start 
 ```
 # Настройка
 ## В файле config.js можно изменить следующие параметры:
